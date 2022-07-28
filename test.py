@@ -1,5 +1,8 @@
 from multiprocessing import Pool
 from load_tables import load_tables
+from hash_join import *
+from sort_merge_join import *
+from run_queries import *
 
 def tests():
     table1 = [('wsdbm:User0', 'wsdbm:User1'), ('wsdbm:User3', 'wsdbm:User1'), ('wsdbm:User0', 'wsdbm:User2'), ('wsdbm:User0', 'wsdbm:User3'),\
@@ -19,8 +22,13 @@ def tests():
     # assert set(hash_join(tables['wsdbm:follows'], tables['wsdbm:friendOf'])) == set(parallel_sort_merge_join(tables['wsdbm:follows'], tables['wsdbm:friendOf'])),\
     #     "the two sorting algorithms should return equivalent results"
     
-    assert set(hash_join(tables['wsdbm:follows'], tables['wsdbm:friendOf'])) == set(sort_merge_join(tables['wsdbm:follows'], tables['wsdbm:friendOf'], tryskipping=True)),\
-        "the two sorting algorithms should return equivalent results"
+    hash_join_result = run_query_hash_join()  # hash_join(tables['follows'], tables['friendOf'])
+    sort_merge_join_result = run_query_sort_merge_join()  # sort_merge_join(tables['follows'], tables['friendOf'], tryskipping=True)
+
+    assert set(hash_join_result) == set(sort_merge_join_result), "the two sorting algorithms should return equivalent results"
+    assert len(hash_join_result) == len(sort_merge_join_result), "the two sorting algorithms should return results of equivalent length"
+    assert len(hash_join_result) == len(set(hash_join_result)), "Set shouldn't loose length"
+    # assert 
 
 
     # assert set(hash_join(tables['wsdbm:follows'], tables['wsdbm:friendOf'])) == set(sort_merge_join(tables['wsdbm:follows'], tables['wsdbm:friendOf'])),\
@@ -28,5 +36,5 @@ def tests():
 
 
 if __name__ == "__main__":
-    load_tables()
+    tables = load_tables()
     tests()

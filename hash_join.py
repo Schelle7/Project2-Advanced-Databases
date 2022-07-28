@@ -9,8 +9,6 @@ def hash_join(table1, table2):
     # later it's necessary to accept bigger tables too therefore maybe join_attr and other_attributes
     for row in table1:
         # object of table1 is join key so is subject of table2
-        # print("Hallo", hash_dict.get(row[-1], list()))
-        # print(row[:-1])
         hash_dict[row[-1]] = hash_dict.get(row[-1], list()) + [row[:-1]]
     
 

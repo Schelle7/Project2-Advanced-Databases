@@ -23,48 +23,39 @@ def load_tables(justTesting=True):
             line = line.strip('\n. ')
             lines.append(line)
 
-        # lines = [lines[i] for i in range(len(lines)) if i%100 == 0]  # TODO change only for Testing
+        # lines = [lines[i] for i in range(len(lines)) if i%100 == 0]  for testing only
         
         # Maybe there are tabs in the quoted parts therefore I use the csv.reader instead of line.split('\t')
         reader = csv.reader(lines, delimiter='\t')
-
-        # print(len(lines))
+        
+        friendOf = []
+        likes = []
+        follows = []
+        hasReview = []
 
         for triple in tqdm(reader, total=len(lines), desc='load_tables'):
             subject = triple[0]
             relation =  triple[1]
             object = triple[2]
 
-            friendOf = []
-            likes = []
-            follows = []
-            hasReview = []
+            if 'follows' in relation:
+                follows.append((subject, object))
+            elif 'friendOf' in relation:
+                friendOf.append((subject, object))
+            elif 'likes' in relation:
+                likes.append((subject, object))
+            elif 'hasReview' in relation:
+                hasReview.append((subject, object))
 
-            if not justTesting and relation not in ['<http://db.uwaterloo.ca/~galuc/wsdbm/friendOf>', '<http://db.uwaterloo.ca/~galuc/wsdbm/likes>',\
-                '<http://db.uwaterloo.ca/~galuc/wsdbm/follows>', '<http://purl.org/stuff/rev#hasReview>']:
-                continue
-            if justTesting and relation not in ['wsdbm:follows', 'wsdbm:friendOf', 'wsdbm:likes', 'rev:hasReview']:  # since we only want to join 4 tables the rest can be ignored
-                continue
+    # print("len(friendOf)", len(friendOf))
+    # print(len(follows))
+    # print(len(likes))
+    # print(len(hasReview))
+    # print(len(friendOf)*len(follows)*len(hasReview)*len(likes))
+    # raise Exception("Testing")
 
-            '<http://db.uwaterloo.ca/~galuc/wsdbm/User58403>'
-            if justTesting:
-                relation = relation.split(':')[-1]
-            else:
-                relation = relation.replace('#', '/').strip('<>')
-                relation =  relation.split('/')[-1]
-                subject = subject.split('/')[-1].strip('<>')
-                object = object.split('/')[-1].strip('<>')
 
-            match relation:
-                case "friendOf":
-                    friendOf.append((subject, object))
-                case "follows":
-                    follows.append((subject, object))
-                case "likes":
-                    likes.append((subject, object))
-                case "hasReview":
-                    hasReview.append((subject, object))
-        
+
     tables["friendOf"] = friendOf
     tables["follows"] = follows
     tables["likes"] = likes
@@ -84,8 +75,8 @@ def save_10M_to_json():
     
 
 if __name__ == "__main__":
-    # save_10M_to_json()
-    save_100k_to_json()
+    save_10M_to_json()
+    # save_100k_to_json()
     # print("result.keys():", result.keys())
     # print("len(result) follows:", len(result['follows']))
     # print("len(result) friendOf:", len(result['friendOf']))
