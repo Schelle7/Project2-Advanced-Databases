@@ -7,7 +7,7 @@ def time_joins():
     # print("Hash join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
     
     start_time = time()
-    result = run_query_sort_merge_join()
+    result = run_query_sort_merge_join(split_up=True)
     print("Sort merge join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
     # print('Write extract result to file')
     # result = result[:5000]
