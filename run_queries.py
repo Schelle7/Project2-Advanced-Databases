@@ -3,7 +3,7 @@ from hash_join import *
 from sort_merge_join import *
 from load_tables import load_tables
 
-tables = load_tables(justTesting=False)
+tables = load_tables(justTesting=True)
 
 
 def join_multiple_tables(lst_tables, join=hash_join):
@@ -17,8 +17,11 @@ def join_multiple_tables(lst_tables, join=hash_join):
         print(f"Join needed {time() - start_time :.2f}")
     return result
 
-def run_query_hash_join():
-    return join_multiple_tables([tables['follows'], tables['friendOf'], tables['likes'], tables['hasReview']], join=hash_join)
+def run_query_hash_join(split_up=False):
+    if split_up:
+        run_query_split_up(join=hash_join)
+    else:
+        return join_multiple_tables([tables['follows'], tables['friendOf'], tables['likes'], tables['hasReview']], join=hash_join)
 
 
 def run_query_sort_merge_join(split_up=False):
@@ -31,7 +34,7 @@ def run_query_sort_merge_join(split_up=False):
 
 def run_query_skip_sort_merge_join(split_up=False):
     if split_up:
-        run_query_split_up(join=sort_merge_join)
+        run_query_split_up(join=skip_sort_merge_join)
     else:
         return join_multiple_tables([tables['follows'], tables['friendOf'], tables['likes'], tables['hasReview']], join=skip_sort_merge_join)
 
@@ -39,7 +42,7 @@ def run_query_skip_sort_merge_join(split_up=False):
 
 def run_query_parallel_sort_merge_join(split_up=False):
     if split_up:
-        run_query_split_up(join=sort_merge_join)
+        run_query_split_up(join=parallel_sort_merge_join)
     else:
         join_multiple_tables([tables['follows'], tables['friendOf'], tables['likes'], tables['hasReview']], join=parallel_sort_merge_join)
 

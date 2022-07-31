@@ -3,11 +3,11 @@ from run_queries import *
 
 def time_joins():
     # start_time = time()
-    # run_query_hash_join()
+    # run_query_hash_join(split_up=True)
     # print("Hash join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
     
     start_time = time()
-    result = run_query_sort_merge_join(split_up=True)
+    result = run_query_sort_merge_join(split_up=False)
     print("Sort merge join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
     # print('Write extract result to file')
     # result = result[:5000]
@@ -18,13 +18,13 @@ def time_joins():
     #         f.write(','.join(line) + '\n')
     
     # start_time = time()
-    # run_query_skip_sort_merge_join()
-    # print("Sort merge join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
+    # run_query_skip_sort_merge_join(split_up=False)
+    # print("Skip sort merge join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
     # start_time = time()
     # run_query_parallel_hash_join()
-    # print("Parallel sort merge join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
+    # print("Parallel sort merge join query needed:"h, f"{(time() - start_time):.2f}", "seconds to run the procedure")
     # start_time = time()
-    # run_query_parallel_sort_merge_join()
+    # run_query_parallel_sort_merge_join(split_up=False)
     # print("Parallel sort merge join query needed:", f"{(time() - start_time):.2f}", "seconds to run the procedure")
 
 time_joins()

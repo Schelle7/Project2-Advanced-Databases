@@ -36,13 +36,13 @@ def sort_merge_join(table1, table2, sort=True, tryskipping=False):
         elif join_attr_table1 < join_attr_table2:
             table1_position += 1
             if tryskipping:
-                possible_new_position = table1_position + length_table1 // 1000
+                possible_new_position = table1_position + 100  # length_table1 // 100
                 if possible_new_position < length_table1 and table1[possible_new_position][-1] < join_attr_table2:
                     table1_position = possible_new_position
         else:
             table2_position += 1
             if tryskipping:
-                possible_new_position = table2_position + length_table2 // 1000
+                possible_new_position = table2_position + 100  # length_table2 // 100
                 if possible_new_position < length_table2 and table2[possible_new_position][0] < join_attr_table1:
                     table2_position = possible_new_position
 
@@ -56,7 +56,7 @@ def parallel_sort_merge_join(table1, table2):
 
     split = 10
 
-    print(len(table1))
+    # print(len(table1))
 
     time_build_tables = time()
 
@@ -65,7 +65,7 @@ def parallel_sort_merge_join(table1, table2):
         split_size = len(table1) // split
         for i in range(split - 1):
             temp_table = table1[i*split_size:(i+1)*split_size]
-            print(len(temp_table))
+            # print(len(temp_table))
             table1_lst.append(temp_table)
         table1_lst.append(table1[(split-1)*split_size:])  # in this bin there might be up to split - 1 more entries
     else:
@@ -89,18 +89,24 @@ def parallel_sort_merge_join(table1, table2):
     if multi_processing_table == []:
         return []
 
+    result = []
+    for table in multi_processing_table:
+        result += sort_merge_join(table[0], table[1], sort=False)
+    return result
 
-    print(f"It takes {time() - time_build_tables :.2f} seconds to build the multiprocessing_table")
 
-    with Pool(processes=8) as pool:  # split + 1
-        time_starmapping = time()
-        intermediate_result = pool.starmap(sort_merge_join, multi_processing_table)
-        print(f"Star mapping takes {time() - time_starmapping :.2f}")
+    # print(f"It takes {time() - time_build_tables :.2f} seconds to build the multiprocessing_table")
 
-        result = []
-        # TODO test how long each part of the function takes
-        start_time = time()
-        for part_result in intermediate_result:
-            result.extend(part_result)  # += part_result
-        print(f"Add results together takes {time() - start_time :.2f} seconds")
-        return result
+
+
+    # with Pool() as pool:  # processes=8  # split + 1
+    #     time_starmapping = time()
+    #     intermediate_result = pool.starmap(sort_merge_join, multi_processing_table)
+    #     # print(f"Star mapping takes {time() - time_starmapping :.2f}")
+
+    # result = []
+    # # TODO test how long each part of the function takes
+    # # start_time = time()
+    # for part_result in intermediate_result:
+    #     result.extend(part_result)  # += part_result
+    # print(f"Add results together takes {time() - start_time :.2f} seconds")
